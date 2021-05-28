@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="Utd-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div>
+      <div class="topbar">
+        <span>Welcome {{ userName }}</span>
+        <button mat-raised-button color="accent" (click)="logout()">
+          Logout
+        </button>
+        <hr />
+      </div>
+
+      <div *ngIf="isVisible">
+        <div class="alert alert-success" role="alert" *ngIf="isSuccess">
+          {{ alertText }}
+        </div>
+        <div class="alert alert-danger" role="alert" *ngIf="!isSuccess">
+          {{ alertText }}
+        </div>
+      </div>
+
+      <!-- Display Records -->
+      <div>
+        <div class="mat-elevation-z8">
+          <div style="text-align: right; padding-right: 20px">
+            <mat-form-field appearance="outline">
+              <mat-label>Search</mat-label>
+              <input
+                matInput
+                (keyup)="applyFilter($event.target)"
+                placeholder="Search"
+              />
+            </mat-form-field>
+          </div>
+          <div class="table-container">
+            <table mat-table [dataSource]="dataList" matSort>
+              <ng-container matColumnDef="id" class="col-1">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                <td mat-cell *matCellDef="let data">{{ data.id }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="userId" class="col-1">
+                <th mat-header-cell *matHeaderCellDef>User Id</th>
+                <td mat-cell *matCellDef="let data">{{ data.userId }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="title" class="col-2">
+                <th mat-header-cell *matHeaderCellDef>Title</th>
+                <td mat-cell *matCellDef="let data">{{ data.title }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="body" class="col-4">
+                <th mat-header-cell *matHeaderCellDef>Body</th>
+                <td mat-cell *matCellDef="let data">{{ data.body }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="update" class="col-1">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let data">
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    data-toggle="modal"
+                    data-target="#updateModal"
+                    (click)="updateData(data)"
+                  >
+                    Update
+                  </button>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="delete" class="col-1">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let data">
+                  <button
+                    mat-raised-button
+                    color="warn"
+                    data-toggle="modal"
+                    data-target="#deleteModal"
+                    (click)="deleteData(data)"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr
+                mat-header-row
+                *matHeaderRowDef="displayedColumns; sticky: true"
+              ></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+          <mat-paginator
+            [pageSizeOptions]="[10, 25, 50]"
+            showFirstLastButtons
+          ></mat-paginator>
+        </div>
+      </div>
+
+      <!-- Add Record -->
+      <div
+        class="add-button-container"
+        style="text-align: right; margin: 0px 40px 10px 0"
+      >
+        <button
+          mat-fab
+          color="primary"
+          aria-label="Add Record Button"
+          data-toggle="modal"
+          data-target="#addModal"
+        >
+          <mat-icon matTooltip="Add Record">add</mat-icon>
+        </button>
+      </div>
+
+      <!-- update Modal  -->
+      <div
+        class="modal fade" id="updateModal" tabindex="-1" role="dialog"  aria-labelledby="updateModalLabel" aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="updateModalLabel">
+                Update for ID: {{ duplicateData.id }}
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form class="formGroup" #updateFrom="ngForm">
+                <div>
+                  <label for="staticUserId" class="col-form-label"
+                    >User Id</label
+                  >
+                  <div>
+                    <input
+                      type="number"
+                      class="form-control"
+                      placeholder="Enter User Id"
+                      name="userId"
+                      [(ngModel)]="duplicateData.userId"
+                      #userId="ngModel"
+                      required
+                    />
+                    <div *ngIf="!userId.valid && userId.touched">
+                      User Id required
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label for="staticTitle" class="col-form-label">Title</label>
+                  <div>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter Title"
+                      name="title"
+                      required
+                      [(ngModel)]="duplicateData.title"
+                      #title="ngModel"
+                      required
+                    />
+                    <div *ngIf="!title.valid && userId.touched">
+                      Title required
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label for="staticBody" class="col-form-label">Body</label>
+                  <div>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter Body"
+                      name="body"
+                      required
+                      [(ngModel)]="duplicateData.body"
+                      #body="ngModel"
+                      required
+                    />
+                    <div *ngIf="!body.valid && body.touched">Body required</div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="updateFormReset()"
+              >
+                Reset
+              </button>
+              <button
+                type="button"
+                class="btn btn-success"
+                data-dismiss="modal"
+                (click)="confirmUpdateData(duplicateData)"
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete Modal  -->
+      <div
+        class="modal fade"
+        id="deleteModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="deleteModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel">
+                Are you sure to delete?
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <table>
+                <tr>
+                  <td><b>Id</b></td>
+                  <td>:</td>
+                  <td>{{ record.id }}</td>
+                </tr>
+                <tr>
+                  <td><b>UserID</b></td>
+                  <td>:</td>
+                  <td>{{ record.userId }}</td>
+                </tr>
+                <tr>
+                  <td><b>Title</b></td>
+                  <td>:</td>
+                  <td>{{ record.title }}</td>
+                </tr>
+                <tr>
+                  <td><b>Body</b></td>
+                  <td>:</td>
+                  <td>{{ record.body }}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                data-dismiss="modal"
+                (click)="confirmDeleteData(record.id)"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Record Modal  -->
+      <div
+        class="modal fade"
+        id="addModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="addModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addModalLabel">Add New Record</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form [formGroup]="addRecordForm">
+                <div>
+                  <div class="col-lg-3">
+                    <label for="userId">User Id</label>
+                    <div>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="userId"
+                        placeholder="Enter User Id"
+                        formControlName="userId"
+                        [ngClass]="{
+                          'is-invalid':
+                            addRecordForm.get('userId').touched &&
+                            addRecordForm.get('userId').invalid
+                        }"
+                      />
+                      <div class="invalid-feedback">
+                        <div
+                          *ngIf="addRecordForm.get('userId').errors?.required"
+                        >
+                          User Id is required
+                        </div>
+                        <div
+                          *ngIf="addRecordForm.get('userId').errors?.pattern"
+                        >
+                          User Id must be number
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <label for="title">Title</label>
+                    <div>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        placeholder="Enter Title"
+                        formControlName="title"
+                        [ngClass]="{
+                          'is-invalid':
+                            addRecordForm.get('title').touched &&
+                            addRecordForm.get('title').invalid
+                        }"
+                      />
+                      <div class="invalid-feedback">
+                        <div>Title is required</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <label for="body">Body</label>
+                    <div>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="body"
+                        placeholder="Enter Body"
+                        formControlName="body"
+                        [ngClass]="{
+                          'is-invalid':
+                            addRecordForm.get('body').touched &&
+                            addRecordForm.get('body').invalid
+                        }"
+                      />
+                      <div class="invalid-feedback">
+                        <div>Body is required</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-success"
+                data-dismiss="modal"
+                [disabled]="addRecordForm.invalid"
+                (click)="addData()"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

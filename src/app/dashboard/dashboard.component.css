@@ -1,0 +1,40 @@
+.topbar button {
+  float: right;
+  margin-right: 20px;
+}
+
+.topbar span {
+  margin-left: 20px;
+}
+
+table {
+  width: 100%;
+}
+
+.box {
+  width: 92%;
+  padding: 10px;
+  border: 1px solid gray;
+  margin-left: 4%;
+}
+
+input.ng-invalid.ng-touched {
+  border: 1px solid red;
+}
+
+.number-right-align {
+  text-align: right;
+}
+
+input.number-right-align::-webkit-outer-spin-button,
+input.number-right-align::-webkit-inner-spin-button {
+  display: none;
+}
+
+input.number-right-align {
+  -moz-appearance: textfield;
+}
+
+.add-button-container.hover {
+  color: aqua;
+}

@@ -1,0 +1,149 @@
+<div class="card m-3">
+    <h5 class="card-header">Register here to continue</h5>
+    {{ errMessage }}
+    <div class="card-body">
+      <form
+        [formGroup]="registerForm"
+        (ngSubmit)="register()"
+        #registerform="ngForm"
+      >
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="fname">First Name</label>
+            <div>
+              <input
+                type="text"
+                class="form-control"
+                id="fname"
+                placeholder="Enter First Name"
+                formControlName="fname"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('fname').touched &&
+                    registerForm.get('fname').invalid
+                }"
+              />
+              <div class="invalid-feedback">
+                <div *ngIf="registerForm.get('fname').errors?.required">
+                  Required
+                </div>
+                
+              </div>
+            </div>
+          </div>
+          <div class="form-group col">
+            <label for="lname">Last Name</label>
+            <div>
+              <input
+                type="text"
+                class="form-control"
+                id="lname"
+                placeholder="Enter Last Name"
+                formControlName="lname"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('lname').touched &&
+                    registerForm.get('lname').invalid
+                }"
+              />
+              <div class="invalid-feedback">
+                <div *ngIf="registerForm.get('lname').errors?.required">
+                  Required
+                </div>
+               
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <div>
+              <input
+                type="text"
+                class="form-control"
+                id="email"
+                placeholder="Enter Email"
+                formControlName="email"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('email').touched &&
+                    registerForm.get('email').invalid
+                }"
+              />
+              <div class="invalid-feedback">
+                <div *ngIf="registerForm.get('email').errors?.required">
+                  Required
+                </div>
+                <div *ngIf="registerForm.get('email').errors?.email">
+                  > Email seems to be not valid
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group col">
+              <label for="pwd">Password</label>
+              <div>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="pwd"
+                  placeholder="Enter Password"
+                  formControlName="pwd"
+                  [ngClass]="{
+                    'is-invalid':
+                      registerForm.get('pwd').touched &&
+                      registerForm.get('pwd').invalid
+                  }"
+                />
+                <div class="invalid-feedback">
+                  <div *ngIf="registerForm.get('pwd').errors?.required">
+                    Required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col">
+              <label for="confirmPwd">Confirm Password</label>
+              <div>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="confirmPwd"
+                  placeholder="Confirm Password"
+                  formControlName="confirmPwd"
+                  [ngClass]="{
+                    'is-invalid':
+                      registerForm.get('confirmPwd').touched &&
+                      registerForm.get('confirmPwd').invalid
+                  }"
+                />
+                <div class="invalid-feedback">
+                  <div *ngIf="registerForm.get('confirmPwd').errors?.required">
+                    Required
+                  </div>
+                  <div *ngIf="registerForm.get('confirmPwd').errors?.mustMatch">
+                    Passwords must match
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: right; padding: 20px">
+          <button
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="registerForm.invalid"
+          >
+            Register
+          </button>
+        </div>
+        <div style="text-align: center">
+          Already Registered? <a routerLink="/login">Login</a> here
+        </div>
+      </form>
+    </div>
+  </div>
+  
